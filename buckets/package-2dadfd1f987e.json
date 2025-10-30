@@ -1,0 +1,12 @@
+{
+  "name": "sylas-cdn",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm dev"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.1"
+  }
+}
