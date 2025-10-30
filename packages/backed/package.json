@@ -1,0 +1,14 @@
+{
+  "name": "sylas-cdn-backed",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "bun run server.ts"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "serve-index": "^1.9.1"
+  }
+}
