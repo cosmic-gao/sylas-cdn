@@ -71,8 +71,8 @@ function isTcpReachable(host: string, port: number, timeout = 1000): Promise<boo
 
 // ---------------- 多源配置 ----------------
 const sources = [
-  { name: "AWS", url: "http://dev.cdn.ai/ping.txt" },
-  { name: "Azure", url: "http://stage.cdn.ai/ping.txt" },
+  { name: "AWS", url: "http://dev.cdn.ai/ping.txt", origin: 'http://dev.cdn.ai' },
+  { name: "Azure", url: "http://stage.cdn.ai/ping.txt", origin: 'http://stage.cdn.ai' },
 ];
 
 const sourceStatus: Record<string, { status: "healthy" | "unhealthy"; lastChecked: string }> = {};
@@ -151,7 +151,9 @@ const rules: Rule[] = [
 function loadManifest() {
   if (!existsSync(MANIFEST_PATH)) return [];
   try {
-    return JSON.parse(readFileSync(MANIFEST_PATH, "utf-8"));
+    const manifest = JSON.parse(readFileSync(MANIFEST_PATH, "utf-8"));
+    // 过滤掉 ping.txt
+    return manifest.filter((item: any) => item.hashed !== "ping.txt");
   } catch {
     return [];
   }
@@ -320,6 +322,18 @@ function renderFileList(): string {
   `;
 }
 
+function corsResponse(body: BodyInit, status = 200, contentType = "text/html; charset=utf-8") {
+  return new Response(body, {
+    status,
+    headers: {
+      "Content-Type": contentType,
+      "Access-Control-Allow-Origin": "*", // 跨域
+      "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
+}
+
 // ---------------- 启动服务器 ----------------
 serve({
   port: 3000,
@@ -367,6 +381,25 @@ serve({
     if (req.method === "POST") {
       if (path === "/delete") return handleFileDelete(req);
       return handleFileUpload(req);
+    }
+
+    if (req.method === "GET" && path === "/api/alive-cdn.json") {
+      const firstHealthy = sources.find(
+        s => sourceStatus[s.name]?.status === "healthy"
+      );
+
+      const result = firstHealthy ? firstHealthy.origin : null;
+
+      return new Response(JSON.stringify({ url: result }), {
+        headers: { "Content-Type": "application/json; charset=utf-8", "Access-Control-Allow-Origin": "*", },
+      });
+    }
+
+    if (req.method === "GET" && path === "/api/manifest.json") {
+      const manifest = loadManifest();
+      return new Response(JSON.stringify(manifest, null, 2), {
+        headers: { "Content-Type": "application/json; charset=utf-8", "Access-Control-Allow-Origin": "*", },
+      });
     }
 
     return new Response("Not Found", { status: 404 });

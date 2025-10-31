@@ -4,8 +4,8 @@ function getFileType(resource) {
     if (hashed.endsWith('.css')) return 'css';
 }
 
-function createScript(cdn, resource, fallback = '') {
-    const urls = [cdn + resource.hashed, fallback + resource.hashed];
+function createScript(cdn, resource, fallback = '/') {
+    const urls = [cdn + '/' + resource.hashed, fallback + resource.hashed];
 
     let index = 0;
     let script;
@@ -16,6 +16,7 @@ function createScript(cdn, resource, fallback = '') {
 
         script = document.createElement('script');
         script.src = url;
+        script.type = 'module'
         if (resource.mode === 'async') script.async = true;
         else if (resource.mode === 'defer') script.defer = true;
 
@@ -25,15 +26,15 @@ function createScript(cdn, resource, fallback = '') {
             next(resolve, reject)
         }
 
-        if (resource.critical) document.body.insertBefore(el, document.body.firstChild);
-        else document.body.appendChild(el);
+        if (resource.critical) document.body.insertBefore(script, document.body.firstChild);
+        else document.body.appendChild(script);
     }
 
     resource.critical ? new Promise((resolve, reject) => next(resolve, reject)) : next();
 }
 
-function createLink(cdn, resource, fallback = '') {
-    const urls = [cdn + resource.hashed, fallback + resource.hashed];
+function createLink(cdn, resource, fallback = '/') {
+    const urls = [cdn + '/' + resource.hashed, fallback + resource.hashed];
 
     let index = 0;
     let link;
@@ -58,17 +59,17 @@ function createLink(cdn, resource, fallback = '') {
 
 async function getAliveCdn() {
     try {
-        const res = await fetch('/api/alive-cdn.json', { cache: 'no-store' });
+        const res = await fetch('http://localhost:3000/api/alive-cdn.json', { cache: 'no-store' });
         const data = await res.json();
-        return data.cdn || '';
+        return data.url ?? 'http://localhost:3001';
     } catch (e) {
-        return '/';
+        return 'http://localhost:3001'
     }
 }
 
 async function getManifest() {
     try {
-        const res = await fetch('/api/manifest.json', { cache: 'no-store' });
+        const res = await fetch('http://localhost:3000/api/manifest.json', { cache: 'no-store' });
         const data = await res.json();
         return data ?? [];
     } catch (e) {

@@ -1,6 +1,12 @@
 [
   {
-    "hashed": "green-3e11edeb32a8.js",
+    "hashed": "green-89f2d5576716.js",
+    "critical": false,
+    "mode": "defer",
+    "priority": 2
+  },
+  {
+    "hashed": "red-2599517c1478.js",
     "critical": false,
     "mode": "defer",
     "priority": 2
