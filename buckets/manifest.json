@@ -1,14 +1,14 @@
 [
   {
     "hashed": "green-4539fe064ad4.js",
-    "critical": false,
-    "mode": "sync",
-    "priority": 2
+    "critical": true,
+    "mode": "defer",
+    "priority": 1
   },
   {
-    "hashed": "red-b77878782e9a.js",
+    "hashed": "ping.txt",
     "critical": false,
-    "mode": "sync",
+    "mode": "defer",
     "priority": 2
   }
 ]
