@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "pnpm dev"
+    "dev": "pnpm -r run dev"
   },
   "devDependencies": {
     "@types/bun": "^1.3.1"
