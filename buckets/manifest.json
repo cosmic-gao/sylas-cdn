@@ -1,14 +1,14 @@
 [
   {
-    "hashed": "green-89f2d5576716.js",
+    "hashed": "green-4539fe064ad4.js",
     "critical": false,
-    "mode": "defer",
+    "mode": "sync",
     "priority": 2
   },
   {
-    "hashed": "red-2599517c1478.js",
+    "hashed": "red-b77878782e9a.js",
     "critical": false,
-    "mode": "defer",
+    "mode": "sync",
     "priority": 2
   }
 ]
